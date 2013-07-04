@@ -15,9 +15,12 @@ $components[] = new QPluginCssFile("includes/jQuery-File-Upload/css");
 $components[] = new QPluginImageFile("includes/jQuery-File-Upload/img");
 $components[] = new QPluginJsFile("includes/JavaScript-Canvas-to-Blob/js");
 $components[] = new QPluginJsFile("includes/JavaScript-Load-Image/js");
+$components[] = new QPluginJsFile("includes/JavaScript-Templates/js");
 $components[] = new QPluginCssFile("includes/bootstrap/css");
 $components[] = new QPluginImageFile("includes/bootstrap/img");
+$components[] = new QPluginJsFile("includes/bootstrap/js");
 $components[] = new QPluginCssFile("includes/Gallery/css");
+$components[] = new QPluginJsFile("includes/Gallery/js");
 
 $components[] = new QPluginControlFile("includes/QJqFileUpload.class.php");
 $components[] = new QPluginControlFile("includes/QJqFileUploadBase.class.php");
