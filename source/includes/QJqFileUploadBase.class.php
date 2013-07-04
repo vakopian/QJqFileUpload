@@ -61,6 +61,32 @@
 	 */
 	class QJqFileUploadBase extends QJqFileUploadGen
 	{
+		protected static $strStartLabel;
+		protected static $strStartUploadLabel;
+		protected static $strUploadLabel;
+		protected static $strAddFilesLabel;
+		protected static $strSelectFilesLabel;
+		protected static $strCancelLabel;
+		protected static $strCancelUploadLabel;
+		protected static $strErrorLabel;
+		protected static $strDeleteLabel;
+		protected static $strAbortLabel;
+		protected static $strProcessingLabel;
+
+		public static function _static_init() {
+			self::$strStartLabel = QApplication::HtmlEntities(QApplication::Translate('Start'));
+			self::$strStartUploadLabel = QApplication::HtmlEntities(QApplication::Translate('Start upload'));
+			self::$strUploadLabel = QApplication::HtmlEntities(QApplication::Translate('Upload'));
+			self::$strAddFilesLabel = QApplication::HtmlEntities(QApplication::Translate('Add files...'));
+			self::$strSelectFilesLabel = QApplication::HtmlEntities(QApplication::Translate('Select Files ...'));
+			self::$strCancelLabel = QApplication::HtmlEntities(QApplication::Translate('Cancel'));
+			self::$strCancelUploadLabel = QApplication::HtmlEntities(QApplication::Translate('Cancel upload'));
+			self::$strErrorLabel = QApplication::HtmlEntities(QApplication::Translate('Error'));
+			self::$strDeleteLabel = QApplication::HtmlEntities(QApplication::Translate('Delete'));
+			self::$strAbortLabel = QApplication::HtmlEntities(QApplication::Translate('Abort'));
+			self::$strProcessingLabel = QApplication::HtmlEntities(QApplication::Translate('Processing...'));
+		}
+
 		/** @var  boolean */
 		protected $blnPerUserDirs;
 		/** @var string */
@@ -68,22 +94,37 @@
 		/** @var \QJqFileUploadHandler */
 		protected $objUploadHandler;
 		/** @var int */
-		protected $intUiType;
+		protected $intUiType = QJqFileUploadType::BASIC;
 
-		public function __construct($objParentObject, $intUiType = QJqFileUploadType::BASIC, $blnUseBootstrapCss = true, $strControlId = null) {
+		public function __construct($objParentObject, $intUiType = QJqFileUploadType::BASIC, $blnUseBootstrap = true, $strControlId = null) {
 			parent::__construct($objParentObject, $strControlId);
+			$this->strDataType = 'json';
 			$this->intUiType = $intUiType;
+			if (!$this->intUiType)
+				$this->intUiType = QJqFileUploadType::BASIC;
 
 			$pluginIncludes = '../../plugins/QJqFileUpload/includes/';
-			if ($blnUseBootstrapCss) {
+			if ($blnUseBootstrap) {
 				$this->AddCssFile($pluginIncludes . 'bootstrap/css/bootstrap.min.css');
 				$this->AddCssFile($pluginIncludes . 'bootstrap/css/bootstrap-responsive.min.css');
 			}
 			$this->AddCssFile($pluginIncludes . 'jQuery-File-Upload/css/jquery.fileupload-ui.css');
+
+			if ($intUiType >= QJqFileUploadType::BASIC_PLUS_UI) {
+				$this->AddCssFile($pluginIncludes . 'Gallery/css/blueimp-gallery.min.css');
+				$this->AddJavascriptFile($pluginIncludes . 'JavaScript-Templates/js/tmpl.min.js');
+			}
+
 			if ($intUiType >= QJqFileUploadType::BASIC_PLUS) {
 				$this->AddJavascriptFile($pluginIncludes . 'JavaScript-Load-Image/js/load-image.min.js');
 				$this->AddJavascriptFile($pluginIncludes . 'JavaScript-Canvas-to-Blob/js/canvas-to-blob.min.js');
 				$this->AddCssFile($pluginIncludes . 'jQuery-File-Upload/css/style.css');
+			}
+			if ($blnUseBootstrap) {
+				$this->AddJavascriptFile($pluginIncludes . 'bootstrap/js/bootstrap.min.js');
+			}
+			if ($intUiType >= QJqFileUploadType::BASIC_PLUS_UI) {
+				$this->AddJavascriptFile($pluginIncludes . 'Gallery/js/blueimp-gallery.min.js');
 			}
 			$this->AddJavascriptFile($pluginIncludes . 'jQuery-File-Upload/js/jquery.iframe-transport.js');
 			$this->AddJavascriptFile($pluginIncludes . 'jQuery-File-Upload/js/jquery.fileupload.js');
@@ -94,9 +135,8 @@
 				$this->AddJavascriptFile($pluginIncludes . 'jQuery-File-Upload/js/jquery.fileupload-video.js');
 				$this->AddJavascriptFile($pluginIncludes . 'jQuery-File-Upload/js/jquery.fileupload-validate.js');
 			}
-
 			if ($intUiType >= QJqFileUploadType::BASIC_PLUS_UI) {
-				$this->AddCssFile($pluginIncludes . 'Gallery/css/blueimp-gallery.min.css');
+				$this->AddJavascriptFile($pluginIncludes . 'jQuery-File-Upload/js/jquery.fileupload-ui.js');
 			}
 
 			$this->objUploadHandler = new QJqFileUploadHandler($this, array(
@@ -147,71 +187,82 @@
 		}
 
 		protected function getUploadTemplate() {
-			return '{% for (var i=0, file; file=o.files[i]; i++) { %}
-			    <tr class="template-upload fade">
-			        <td>
-			            <span class="preview"></span>
-			        </td>
-			        <td>
-			            <p class="name">{%=file.name%}</p>
-			            {% if (file.error) { %}
-			                <div><span class="label label-important">Error</span> {%=file.error%}</div>
-			            {% } %}
-			        </td>
-			        <td>
-			            <p class="size">{%=o.formatFileSize(file.size)%}</p>
-			            {% if (!o.files.error) { %}
-			                <div class="progress progress-success progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="bar" style="width:0%;"></div></div>
-			            {% } %}
-			        </td>
-			        <td>
-			            {% if (!o.files.error && !i && !o.options.autoUpload) { %}
-			                <button class="btn btn-primary start">
-			                    <i class="icon-upload icon-white"></i>
-			                    <span>Start</span>
-			                </button>
-			            {% } %}
-			            {% if (!i) { %}
-			                <button class="btn btn-warning cancel">
-			                    <i class="icon-ban-circle icon-white"></i>
-			                    <span>Cancel</span>
-			                </button>
-			            {% } %}
-			        </td>
-			    </tr>
-			{% } %}';
+			$strStartLabel = QApplication::Translate('Start');
+			$strCancelLabel = QApplication::Translate('Cancel');
+			$strErrorLabel = QApplication::Translate('Error');
+			$strResult = <<<SCRIPT
+{% for (var i=0, file; file=o.files[i]; i++) { %}
+	<tr class="template-upload fade">
+		<td>
+			<span class="preview"></span>
+		</td>
+		<td>
+			<p class="name">{%=file.name%}</p>
+			{% if (file.error) { %}
+				<div><span class="label label-important">$strErrorLabel</span> {%=file.error%}</div>
+			{% } %}
+		</td>
+		<td>
+			<p class="size">{%=o.formatFileSize(file.size)%}</p>
+			{% if (!o.files.error) { %}
+				<div class="progress progress-success progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="bar" style="width:0%;"></div></div>
+			{% } %}
+		</td>
+		<td>
+			{% if (!o.files.error && !i && !o.options.autoUpload) { %}
+				<button class="btn btn-primary start">
+					<i class="icon-upload icon-white"></i>
+					<span>$strStartLabel</span>
+				</button>
+			{% } %}
+			{% if (!i) { %}
+				<button class="btn btn-warning cancel">
+					<i class="icon-ban-circle icon-white"></i>
+					<span>$strCancelLabel</span>
+				</button>
+			{% } %}
+		</td>
+	</tr>
+{% } %}
+SCRIPT;
+			return $strResult;
 		}
 
 		protected function getDownloadTemplate() {
-			return '{% for (var i=0, file; file=o.files[i]; i++) { %}
-			    <tr class="template-download fade">
-			        <td>
-			            <span class="preview">
-			                {% if (file.thumbnail_url) { %}
-			                    <a href="{%=file.url%}" title="{%=file.name%}" class="gallery" download="{%=file.name%}"><img src="{%=file.thumbnail_url%}"></a>
-			                {% } %}
-			            </span>
-			        </td>
-			        <td>
-			            <p class="name">
-			                <a href="{%=file.url%}" title="{%=file.name%}" class="{%=file.thumbnail_url?\'gallery\':\'\'%}" download="{%=file.name%}">{%=file.name%}</a>
-			            </p>
-			            {% if (file.error) { %}
-			                <div><span class="label label-important">Error</span> {%=file.error%}</div>
-			            {% } %}
-			        </td>
-			        <td>
-			            <span class="size">{%=o.formatFileSize(file.size)%}</span>
-			        </td>
-			        <td>
-			            <button class="btn btn-danger delete" data-type="{%=file.delete_type%}" data-url="{%=file.delete_url%}"{% if (file.delete_with_credentials) { %} data-xhr-fields=\'{"withCredentials":true}\'{% } %}>
-			                <i class="icon-trash icon-white"></i>
-			                <span>Delete</span>
-			            </button>
-			            <input type="checkbox" name="delete" value="1" class="toggle">
-			        </td>
-			    </tr>
-			{% } %}';
+			$strDeleteLabel = QApplication::Translate('Delete');
+			$strErrorLabel = QApplication::Translate('Error');
+			$strResult = <<<SCRIPT
+{% for (var i=0, file; file=o.files[i]; i++) { %}
+	<tr class="template-download fade">
+		<td>
+			<span class="preview">
+				{% if (file.thumbnail_url) { %}
+					<a href="{%=file.url%}" title="{%=file.name%}" class="gallery" download="{%=file.name%}"><img src="{%=file.thumbnail_url%}"></a>
+				{% } %}
+			</span>
+		</td>
+		<td>
+			<p class="name">
+				<a href="{%=file.url%}" title="{%=file.name%}" class="{%=file.thumbnail_url?'gallery':''%}" download="{%=file.name%}">{%=file.name%}</a>
+			</p>
+			{% if (file.error) { %}
+				<div><span class="label label-important">$strErrorLabel</span> {%=file.error%}</div>
+			{% } %}
+		</td>
+		<td>
+			<span class="size">{%=o.formatFileSize(file.size)%}</span>
+		</td>
+		<td>
+			<button class="btn btn-danger delete" data-type="{%=file.delete_type%}" data-url="{%=file.delete_url%}"{% if (file.delete_with_credentials) { %} data-xhr-fields='{"withCredentials":true}'{% } %}>
+				<i class="icon-trash icon-white"></i>
+				<span>$strDeleteLabel</span>
+			</button>
+			<input type="checkbox" name="delete" value="1" class="toggle">
+		</td>
+	</tr>
+{% } %}
+SCRIPT;
+			return $strResult;
 		}
 
 		protected function GetControlHtml() {
@@ -227,25 +278,29 @@
 
 			switch ($this->intUiType) {
 				case QJqFileUploadType::BASIC_PLUS_UI:
-					$strResult = sprintf('
+					$strAddFilesLabel = self::$strAddFilesLabel;
+					$strStartUploadLabel = self::$strStartUploadLabel;
+					$strCancelUploadLabel = self::$strCancelUploadLabel;
+					$strDeleteLabel = self::$strDeleteLabel;
+					$strResult = <<<SCRIPT
 <div class="row fileupload-buttonbar">
 	<div class="span7">
 		<span class="btn btn-success fileinput-button">
 			<i class="icon-plus icon-white"></i>
-			<span>%s</span>
-			%s
+			<span>$strAddFilesLabel</span>
+			$strFileControlHtml
 		</span>
 		<button type="submit" class="btn btn-primary start">
 			<i class="icon-upload icon-white"></i>
-			<span>%s</span>
+			<span>$strStartUploadLabel</span>
 		</button>
 		<button type="reset" class="btn btn-warning cancel">
 			<i class="icon-ban-circle icon-white"></i>
-			<span>%s</span>
+			<span>$strCancelUploadLabel</span>
 		</button>
 		<button type="button" class="btn btn-danger delete">
 			<i class="icon-trash icon-white"></i>
-			<span>%s</span>
+			<span>$strDeleteLabel</span>
 		</button>
 	</div>
 	<div class="span5 fileupload-progress fade">
@@ -266,35 +321,125 @@
 	<a class="close">×</a>
 	<ol class="indicator"></ol>
 </div>
-<script id="template-upload" type="text/x-tmpl">%s</script>
-<script id="template-download" type="text/x-tmpl">%s</script>',
-						QApplication::Translate('Add files...'), $strFileControlHtml, QApplication::Translate('Start upload'), QApplication::Translate('Cancel upload'), QApplication::Translate('Delete'),
-						$this->getUploadTemplate(),
-						$this->getDownloadTemplate()
-					);
+<script id="template-upload" type="text/x-tmpl">{$this->getUploadTemplate()}</script>
+<script id="template-download" type="text/x-tmpl">{$this->getDownloadTemplate()}</script>
+SCRIPT;
 					return $strResult;
 				case QJqFileUploadType::BASIC_PLUS:
 				case QJqFileUploadType::BASIC:
 				default:
-					return sprintf('
+					$strFileLabel = $this->intUiType == QJqFileUploadType::BASIC_PLUS ? self::$strAddFilesLabel : self::$strSelectFilesLabel;
+					$strResult = <<<SCRIPT
 <span class="btn btn-success fileinput-button">
 	<i class="icon-plus icon-white"></i>
-	<span>%s</span>
-	%s
+	<span>$strFileLabel</span>
+	$strFileControlHtml
 </span>
-<div id="progress" class="progress progress-success progress-striped">
+<div id="{$this->strControlId}_progress" class="progress progress-success progress-striped">
 	<div class="bar"></div>
 </div>
-<div id="files" class="files"></div>',
-						$this->intUiType == QJqFileUploadType::BASIC_PLUS ? QApplication::Translate('Add Files ...') : QApplication::Translate('Select Files ...'), $strFileControlHtml);
+<div id="{$this->strControlId}_files" class="files"></div>
+SCRIPT;
+					return $strResult;
 			}
 		}
 
 		public function GetControlJavaScript() {
-			if ($this->intUiType == QJqFileUploadType::BASIC_PLUS_UI) {
-				return '';
+			$strJS = parent::GetControlJavaScript();
+			switch ($this->intUiType) {
+				case QJqFileUploadType::BASIC:
+					$strJS .=<<<FUNC
+.on('fileuploadprogressall', function (e, data) {
+	var progress = parseInt(data.loaded / data.total * 100, 10);
+	jQuery('#{$this->ControlId}_progress .bar').css(
+		'width',
+		progress + '%'
+	);
+}).on('fileuploaddone', function (e, data) {
+	jQuery.each(data.result.files, function (index, file) {
+		jQuery('<p/>').text(file.name).appendTo('#{$this->ControlId}_files');
+	});
+})
+FUNC;
+					break;
+				case QJqFileUploadType::BASIC_PLUS:
+					$strProcessingLabel = self::$strProcessingLabel;
+					$strUploadLabel = self::$strUploadLabel;
+					$strAbortLabel = self::$strAbortLabel;
+					$strJS .=<<<FUNC
+.on('fileuploadadd', function (e, data) {
+	data.context = jQuery('<div/>').appendTo('#{$this->ControlId}_files');
+	jQuery.each(data.files, function (index, file) {
+		var node = jQuery('<p/>')
+				.append(jQuery('<span/>').text(file.name));
+		if (!index) {
+			var uploadButton = jQuery('<button/>').addClass('btn').prop('disabled', true).text('$strProcessingLabel')
+						.on('click', function () {
+							var self = jQuery(this), data = self.data();
+							self
+								.off('click')
+								.text('$strAbortLabel')
+								.on('click', function () {
+									self.remove();
+									data.abort();
+								});
+							data.submit().always(function () {
+								self.remove();
+							});
+						});
+			node
+				.append('<br>')
+				.append(uploadButton.data(data));
+		}
+		node.appendTo(data.context);
+	});
+}).on('fileuploadprocessalways', function (e, data) {
+	var index = data.index,
+		file = data.files[index],
+		node = jQuery(data.context.children()[index]);
+	if (file.preview) {
+		node
+			.prepend('<br>')
+			.prepend(file.preview);
+	}
+	if (file.error) {
+		node
+			.append('<br>')
+			.append(file.error);
+	}
+	if (index + 1 === data.files.length) {
+		data.context.find('button')
+			.text('$strUploadLabel')
+			.prop('disabled', !!data.files.error);
+	}
+}).on('fileuploadprogressall', function (e, data) {
+	var progress = parseInt(data.loaded / data.total * 100, 10);
+	jQuery('#{$this->ControlId}_progress .bar').css(
+		'width',
+		progress + '%'
+	);
+}).on('fileuploaddone', function (e, data) {
+	jQuery.each(data.result.files, function (index, file) {
+		var link = jQuery('<a>')
+			.attr('target', '_blank')
+			.prop('href', file.url);
+		jQuery(data.context.children()[index])
+			.wrap(link);
+	});
+}).on('fileuploadfail', function (e, data) {
+	jQuery.each(data.result.files, function (index, file) {
+		var error = jQuery('<span/>').text(file.error);
+		jQuery(data.context.children()[index])
+			.append('<br>')
+			.append(error);
+	});
+})
+FUNC;
+					break;
+				case QJqFileUploadType::BASIC_PLUS_UI:
+					break;
 			}
-			return parent::GetControlJavaScript();
+			return $strJS;
 		}
 
 
@@ -344,4 +489,6 @@
 			}
 		}
 	}
+
+	QJqFileUploadBase::_static_init();
 ?>
