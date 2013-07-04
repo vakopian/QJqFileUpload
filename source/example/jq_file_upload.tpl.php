@@ -5,6 +5,9 @@
 </div>
 <div style="margin-left: 100px">
 	<?php $this->objFileUpload->Render(); ?>
+		<div>
+			<?php $this->lblStatus->Render(); ?>
+		</div>
 </div>
 
 <?php $this->RenderEnd(); ?>
