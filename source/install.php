@@ -10,23 +10,24 @@ $objPlugin->strAuthorEmail = "vakopian+qcubed [at] gmail [dot] com";
 
 $components = array();
 
-$components[] = new QPluginJsFile("includes/jQuery-File-Upload/js");
-$components[] = new QPluginCssFile("includes/jQuery-File-Upload/css");
-$components[] = new QPluginImageFile("includes/jQuery-File-Upload/img");
-$components[] = new QPluginJsFile("includes/JavaScript-Canvas-to-Blob/js");
-$components[] = new QPluginJsFile("includes/JavaScript-Load-Image/js");
-$components[] = new QPluginJsFile("includes/JavaScript-Templates/js");
-$components[] = new QPluginCssFile("includes/bootstrap/css");
-$components[] = new QPluginImageFile("includes/bootstrap/img");
-$components[] = new QPluginJsFile("includes/bootstrap/js");
-$components[] = new QPluginCssFile("includes/Gallery/css");
-$components[] = new QPluginJsFile("includes/Gallery/js");
+$components[] = new QPluginJsFile("BlueImp/jQuery-File-Upload/js");
+$components[] = new QPluginCssFile("BlueImp/jQuery-File-Upload/css");
+$components[] = new QPluginImageFile("BlueImp/jQuery-File-Upload/img");
+$components[] = new QPluginJsFile("BlueImp/JavaScript-Canvas-to-Blob/js");
+$components[] = new QPluginJsFile("BlueImp/JavaScript-Load-Image/js");
+$components[] = new QPluginJsFile("BlueImp/JavaScript-Templates/js");
+$components[] = new QPluginJsFile("BlueImp/Gallery/js");
+$components[] = new QPluginCssFile("BlueImp/Gallery/css");
+
+$components[] = new QPluginJsFile("bootstrap/js");
+$components[] = new QPluginCssFile("bootstrap/css");
+$components[] = new QPluginImageFile("bootstrap/img");
 
 $components[] = new QPluginControlFile("includes/QJqFileUpload.class.php");
 $components[] = new QPluginControlFile("includes/QJqFileUploadBase.class.php");
 $components[] = new QPluginControlFile("includes/QJqFileUploadGen.class.php");
-$components[] = new QPluginControlFile("includes/jQuery-File-Upload/server/php/UploadHandler.php");
-$components[] = new QPluginIncludedClass("UploadHandler", "includes/jQuery-File-Upload/server/php/UploadHandler.php");
+$components[] = new QPluginControlFile("BlueImp/jQuery-File-Upload/server/php/UploadHandler.php");
+$components[] = new QPluginIncludedClass("UploadHandler", "BlueImp/jQuery-File-Upload/server/php/UploadHandler.php");
 $components[] = new QPluginIncludedClass("QJqFileUploadHandler", "includes/QJqFileUploadBase.class.php");
 $components[] = new QPluginIncludedClass("QJqFileUpload", "includes/QJqFileUpload.class.php");
 $components[] = new QPluginIncludedClass("QJqFileUploadBase", "includes/QJqFileUploadBase.class.php");
