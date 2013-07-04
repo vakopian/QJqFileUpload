@@ -103,40 +103,39 @@
 			if (!$this->intUiType)
 				$this->intUiType = QJqFileUploadType::BASIC;
 
-			$pluginIncludes = '../../plugins/QJqFileUpload/includes/';
 			if ($blnUseBootstrap) {
-				$this->AddCssFile($pluginIncludes . 'bootstrap/css/bootstrap.min.css');
-				$this->AddCssFile($pluginIncludes . 'bootstrap/css/bootstrap-responsive.min.css');
+				$this->AddPluginCssFile('QJqFileUpload', '/bootstrap/css/bootstrap.min.css');
+				$this->AddPluginCssFile('QJqFileUpload', '/bootstrap/css/bootstrap-responsive.min.css');
 			}
-			$this->AddCssFile($pluginIncludes . 'jQuery-File-Upload/css/jquery.fileupload-ui.css');
+			$this->AddPluginCssFile('QJqFileUpload', '/BlueImp/jQuery-File-Upload/css/jquery.fileupload-ui.css');
 
 			if ($intUiType >= QJqFileUploadType::BASIC_PLUS_UI) {
-				$this->AddCssFile($pluginIncludes . 'Gallery/css/blueimp-gallery.min.css');
-				$this->AddJavascriptFile($pluginIncludes . 'JavaScript-Templates/js/tmpl.min.js');
+				$this->AddPluginCssFile('QJqFileUpload', '/BlueImp/Gallery/css/blueimp-gallery.min.css');
+				$this->AddPluginJavascriptFile('QJqFileUpload', '/BlueImp/JavaScript-Templates/js/tmpl.min.js');
 			}
 
 			if ($intUiType >= QJqFileUploadType::BASIC_PLUS) {
-				$this->AddJavascriptFile($pluginIncludes . 'JavaScript-Load-Image/js/load-image.min.js');
-				$this->AddJavascriptFile($pluginIncludes . 'JavaScript-Canvas-to-Blob/js/canvas-to-blob.min.js');
-				$this->AddCssFile($pluginIncludes . 'jQuery-File-Upload/css/style.css');
+				$this->AddPluginJavascriptFile('QJqFileUpload', '/BlueImp/JavaScript-Load-Image/js/load-image.min.js');
+				$this->AddPluginJavascriptFile('QJqFileUpload', '/BlueImp/JavaScript-Canvas-to-Blob/js/canvas-to-blob.min.js');
+				$this->AddPluginCssFile('QJqFileUpload', '/BlueImp/jQuery-File-Upload/css/style.css');
 			}
 			if ($blnUseBootstrap) {
-				$this->AddJavascriptFile($pluginIncludes . 'bootstrap/js/bootstrap.min.js');
+				$this->AddPluginJavascriptFile('QJqFileUpload', '/bootstrap/js/bootstrap.min.js');
 			}
 			if ($intUiType >= QJqFileUploadType::BASIC_PLUS_UI) {
-				$this->AddJavascriptFile($pluginIncludes . 'Gallery/js/blueimp-gallery.min.js');
+				$this->AddPluginJavascriptFile('QJqFileUpload', '/BlueImp/Gallery/js/blueimp-gallery.min.js');
 			}
-			$this->AddJavascriptFile($pluginIncludes . 'jQuery-File-Upload/js/jquery.iframe-transport.js');
-			$this->AddJavascriptFile($pluginIncludes . 'jQuery-File-Upload/js/jquery.fileupload.js');
+			$this->AddPluginJavascriptFile('QJqFileUpload', '/BlueImp/jQuery-File-Upload/js/jquery.iframe-transport.js');
+			$this->AddPluginJavascriptFile('QJqFileUpload', '/BlueImp/jQuery-File-Upload/js/jquery.fileupload.js');
 			if ($intUiType >= QJqFileUploadType::BASIC_PLUS) {
-				$this->AddJavascriptFile($pluginIncludes . 'jQuery-File-Upload/js/jquery.fileupload-process.js');
-				$this->AddJavascriptFile($pluginIncludes . 'jQuery-File-Upload/js/jquery.fileupload-image.js');
-				$this->AddJavascriptFile($pluginIncludes . 'jQuery-File-Upload/js/jquery.fileupload-audio.js');
-				$this->AddJavascriptFile($pluginIncludes . 'jQuery-File-Upload/js/jquery.fileupload-video.js');
-				$this->AddJavascriptFile($pluginIncludes . 'jQuery-File-Upload/js/jquery.fileupload-validate.js');
+				$this->AddPluginJavascriptFile('QJqFileUpload', '/BlueImp/jQuery-File-Upload/js/jquery.fileupload-process.js');
+				$this->AddPluginJavascriptFile('QJqFileUpload', '/BlueImp/jQuery-File-Upload/js/jquery.fileupload-image.js');
+				$this->AddPluginJavascriptFile('QJqFileUpload', '/BlueImp/jQuery-File-Upload/js/jquery.fileupload-audio.js');
+				$this->AddPluginJavascriptFile('QJqFileUpload', '/BlueImp/jQuery-File-Upload/js/jquery.fileupload-video.js');
+				$this->AddPluginJavascriptFile('QJqFileUpload', '/BlueImp/jQuery-File-Upload/js/jquery.fileupload-validate.js');
 			}
 			if ($intUiType >= QJqFileUploadType::BASIC_PLUS_UI) {
-				$this->AddJavascriptFile($pluginIncludes . 'jQuery-File-Upload/js/jquery.fileupload-ui.js');
+				$this->AddPluginJavascriptFile('QJqFileUpload', '/BlueImp/jQuery-File-Upload/js/jquery.fileupload-ui.js');
 			}
 
 			$this->objUploadHandler = new QJqFileUploadHandler($this, array(
