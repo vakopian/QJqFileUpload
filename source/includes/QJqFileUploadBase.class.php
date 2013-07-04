@@ -104,38 +104,38 @@
 				$this->intUiType = QJqFileUploadType::BASIC;
 
 			if ($blnUseBootstrap) {
-				$this->AddPluginCssFile('QJqFileUpload', '/bootstrap/css/bootstrap.min.css');
-				$this->AddPluginCssFile('QJqFileUpload', '/bootstrap/css/bootstrap-responsive.min.css');
+				$this->AddPluginCssFile('QJqFileUpload', '../bootstrap/css/bootstrap.min.css');
+				$this->AddPluginCssFile('QJqFileUpload', '../bootstrap/css/bootstrap-responsive.min.css');
 			}
-			$this->AddPluginCssFile('QJqFileUpload', '/BlueImp/jQuery-File-Upload/css/jquery.fileupload-ui.css');
+			$this->AddPluginCssFile('QJqFileUpload', '../BlueImp/jQuery-File-Upload/css/jquery.fileupload-ui.css');
 
 			if ($intUiType >= QJqFileUploadType::BASIC_PLUS_UI) {
-				$this->AddPluginCssFile('QJqFileUpload', '/BlueImp/Gallery/css/blueimp-gallery.min.css');
-				$this->AddPluginJavascriptFile('QJqFileUpload', '/BlueImp/JavaScript-Templates/js/tmpl.min.js');
+				$this->AddPluginCssFile('QJqFileUpload', '../BlueImp/Gallery/css/blueimp-gallery.min.css');
+				$this->AddPluginJavascriptFile('QJqFileUpload', '../BlueImp/JavaScript-Templates/js/tmpl.min.js');
 			}
 
 			if ($intUiType >= QJqFileUploadType::BASIC_PLUS) {
-				$this->AddPluginJavascriptFile('QJqFileUpload', '/BlueImp/JavaScript-Load-Image/js/load-image.min.js');
-				$this->AddPluginJavascriptFile('QJqFileUpload', '/BlueImp/JavaScript-Canvas-to-Blob/js/canvas-to-blob.min.js');
-				$this->AddPluginCssFile('QJqFileUpload', '/BlueImp/jQuery-File-Upload/css/style.css');
+				$this->AddPluginJavascriptFile('QJqFileUpload', '../BlueImp/JavaScript-Load-Image/js/load-image.min.js');
+				$this->AddPluginJavascriptFile('QJqFileUpload', '../BlueImp/JavaScript-Canvas-to-Blob/js/canvas-to-blob.min.js');
+				$this->AddPluginCssFile('QJqFileUpload', '../BlueImp/jQuery-File-Upload/css/style.css');
 			}
 			if ($blnUseBootstrap) {
-				$this->AddPluginJavascriptFile('QJqFileUpload', '/bootstrap/js/bootstrap.min.js');
+				$this->AddPluginJavascriptFile('QJqFileUpload', '../bootstrap/js/bootstrap.min.js');
 			}
 			if ($intUiType >= QJqFileUploadType::BASIC_PLUS_UI) {
-				$this->AddPluginJavascriptFile('QJqFileUpload', '/BlueImp/Gallery/js/blueimp-gallery.min.js');
+				$this->AddPluginJavascriptFile('QJqFileUpload', '../BlueImp/Gallery/js/blueimp-gallery.min.js');
 			}
-			$this->AddPluginJavascriptFile('QJqFileUpload', '/BlueImp/jQuery-File-Upload/js/jquery.iframe-transport.js');
-			$this->AddPluginJavascriptFile('QJqFileUpload', '/BlueImp/jQuery-File-Upload/js/jquery.fileupload.js');
+			$this->AddPluginJavascriptFile('QJqFileUpload', '../BlueImp/jQuery-File-Upload/js/jquery.iframe-transport.js');
+			$this->AddPluginJavascriptFile('QJqFileUpload', '../BlueImp/jQuery-File-Upload/js/jquery.fileupload.js');
 			if ($intUiType >= QJqFileUploadType::BASIC_PLUS) {
-				$this->AddPluginJavascriptFile('QJqFileUpload', '/BlueImp/jQuery-File-Upload/js/jquery.fileupload-process.js');
-				$this->AddPluginJavascriptFile('QJqFileUpload', '/BlueImp/jQuery-File-Upload/js/jquery.fileupload-image.js');
-				$this->AddPluginJavascriptFile('QJqFileUpload', '/BlueImp/jQuery-File-Upload/js/jquery.fileupload-audio.js');
-				$this->AddPluginJavascriptFile('QJqFileUpload', '/BlueImp/jQuery-File-Upload/js/jquery.fileupload-video.js');
-				$this->AddPluginJavascriptFile('QJqFileUpload', '/BlueImp/jQuery-File-Upload/js/jquery.fileupload-validate.js');
+				$this->AddPluginJavascriptFile('QJqFileUpload', '../BlueImp/jQuery-File-Upload/js/jquery.fileupload-process.js');
+				$this->AddPluginJavascriptFile('QJqFileUpload', '../BlueImp/jQuery-File-Upload/js/jquery.fileupload-image.js');
+				$this->AddPluginJavascriptFile('QJqFileUpload', '../BlueImp/jQuery-File-Upload/js/jquery.fileupload-audio.js');
+				$this->AddPluginJavascriptFile('QJqFileUpload', '../BlueImp/jQuery-File-Upload/js/jquery.fileupload-video.js');
+				$this->AddPluginJavascriptFile('QJqFileUpload', '../BlueImp/jQuery-File-Upload/js/jquery.fileupload-validate.js');
 			}
 			if ($intUiType >= QJqFileUploadType::BASIC_PLUS_UI) {
-				$this->AddPluginJavascriptFile('QJqFileUpload', '/BlueImp/jQuery-File-Upload/js/jquery.fileupload-ui.js');
+				$this->AddPluginJavascriptFile('QJqFileUpload', '../BlueImp/jQuery-File-Upload/js/jquery.fileupload-ui.js');
 			}
 
 			$this->objUploadHandler = new QJqFileUploadHandler($this, array(
@@ -145,6 +145,102 @@
 			$this->strUploadDir = sys_get_temp_dir() . '/';
 			$this->blnUseWrapper = false;
 			$this->SetCustomAttribute('multiple', 'multiple');
+
+			$this->setupDefaultEventHandlers();
+		}
+
+		protected function setupDefaultEventHandlers() {
+			$this->setupDefaultProgressAllEventHandler();
+			$this->setupDefaultDoneEventHandler();
+			$this->setupDefaultAddEventHandler();
+			$this->setupDefaultProcessAlwaysEventHandler();
+		}
+		protected function setupDefaultProgressAllEventHandler() {
+			$objAction = new QJavaScriptAction("
+				var progress = parseInt(ui.loaded / ui.total * 100, 10);
+				jQuery('#{$this->ControlId}_progress .bar').css('width', progress + '%');
+			");
+			$this->AddAction(new QJqFileUpload_progressallEvent(), $objAction);
+		}
+
+		protected function setupDefaultDoneEventHandler() {
+			if ($this->intUiType == QJqFileUploadType::BASIC) {
+				$objAction = new QJavaScriptAction("
+					jQuery.each(ui.result.files, function (index, file) {
+						jQuery('<p/>').text(file.name).appendTo('#{$this->ControlId}_files');
+					});
+				");
+				$this->AddAction(new QJqFileUpload_doneEvent(), $objAction);
+			} else if ($this->intUiType == QJqFileUploadType::BASIC_PLUS) {
+				$objAction = new QJavaScriptAction("
+					jQuery.each(ui.result.files, function (index, file) {
+						var link = jQuery('<a>').attr('target', '_blank').prop('href', file.url);
+						jQuery(ui.context.children()[index]).wrap(link);
+					});
+				");
+				$this->AddAction(new QJqFileUpload_doneEvent(), $objAction);
+			}
+		}
+
+		protected function setupDefaultAddEventHandler() {
+			if ($this->intUiType == QJqFileUploadType::BASIC_PLUS) {
+				$strProcessingLabel = self::$strProcessingLabel;
+				$strAbortLabel = self::$strAbortLabel;
+				$objAction = new QJavaScriptAction("
+					ui.context = jQuery('<div/>').appendTo('#{$this->ControlId}_files');
+					jQuery.each(ui.files, function (index, file) {
+						var node = jQuery('<p/>').append(jQuery('<span/>').text(file.name));
+						if (!index) {
+							var uploadButton = jQuery('<button/>').addClass('btn').prop('disabled', true).text('$strProcessingLabel')
+								.on('click', function () {
+									var self = jQuery(this), data = self.data();
+									self.off('click').text('$strAbortLabel')
+										.on('click', function () {
+											self.remove();
+											data.abort();
+										});
+									data.submit().always(function () {
+										self.remove();
+									});
+								});
+							node.append('<br>').append(uploadButton.data(ui));
+						}
+						node.appendTo(ui.context);
+					});
+				");
+				$this->AddAction(new QJqFileUpload_addEvent(), $objAction);
+			}
+		}
+
+		protected function setupDefaultProcessAlwaysEventHandler() {
+			if ($this->intUiType == QJqFileUploadType::BASIC_PLUS) {
+				$strUploadLabel = self::$strUploadLabel;
+				$objAction = new QJavaScriptAction("
+					var index = ui.index, file = ui.files[index], node = jQuery(ui.context.children()[index]);
+					if (file.preview) {
+						node.prepend('<br>').prepend(file.preview);
+					}
+					if (file.error) {
+						node.append('<br>').append(file.error);
+					}
+					if (index + 1 === ui.files.length) {
+						ui.context.find('button').text('$strUploadLabel').prop('disabled', !!ui.files.error);
+					}
+				");
+				$this->AddAction(new QJqFileUpload_processalwaysEvent(), $objAction);
+			}
+		}
+
+		protected function setupDefaultFailEventHandler() {
+			if ($this->intUiType == QJqFileUploadType::BASIC_PLUS) {
+				$objAction = new QJavaScriptAction("
+					jQuery.each(ui.result.files, function (index, file) {
+						var error = jQuery('<span/>').text(file.error);
+						jQuery(ui.context.children()[index]).append('<br>').append(error);
+					});
+				");
+				$this->AddAction(new QJqFileUpload_failEvent(), $objAction);
+			}
 		}
 
 		protected function makeJqOptions() {
@@ -342,105 +438,6 @@ SCRIPT;
 					return $strResult;
 			}
 		}
-
-		public function GetControlJavaScript() {
-			$strJS = parent::GetControlJavaScript();
-			switch ($this->intUiType) {
-				case QJqFileUploadType::BASIC:
-					$strJS .=<<<FUNC
-.on('fileuploadprogressall', function (e, data) {
-	var progress = parseInt(data.loaded / data.total * 100, 10);
-	jQuery('#{$this->ControlId}_progress .bar').css(
-		'width',
-		progress + '%'
-	);
-}).on('fileuploaddone', function (e, data) {
-	jQuery.each(data.result.files, function (index, file) {
-		jQuery('<p/>').text(file.name).appendTo('#{$this->ControlId}_files');
-	});
-})
-FUNC;
-					break;
-				case QJqFileUploadType::BASIC_PLUS:
-					$strProcessingLabel = self::$strProcessingLabel;
-					$strUploadLabel = self::$strUploadLabel;
-					$strAbortLabel = self::$strAbortLabel;
-					$strJS .=<<<FUNC
-.on('fileuploadadd', function (e, data) {
-	data.context = jQuery('<div/>').appendTo('#{$this->ControlId}_files');
-	jQuery.each(data.files, function (index, file) {
-		var node = jQuery('<p/>')
-				.append(jQuery('<span/>').text(file.name));
-		if (!index) {
-			var uploadButton = jQuery('<button/>').addClass('btn').prop('disabled', true).text('$strProcessingLabel')
-						.on('click', function () {
-							var self = jQuery(this), data = self.data();
-							self
-								.off('click')
-								.text('$strAbortLabel')
-								.on('click', function () {
-									self.remove();
-									data.abort();
-								});
-							data.submit().always(function () {
-								self.remove();
-							});
-						});
-			node
-				.append('<br>')
-				.append(uploadButton.data(data));
-		}
-		node.appendTo(data.context);
-	});
-}).on('fileuploadprocessalways', function (e, data) {
-	var index = data.index,
-		file = data.files[index],
-		node = jQuery(data.context.children()[index]);
-	if (file.preview) {
-		node
-			.prepend('<br>')
-			.prepend(file.preview);
-	}
-	if (file.error) {
-		node
-			.append('<br>')
-			.append(file.error);
-	}
-	if (index + 1 === data.files.length) {
-		data.context.find('button')
-			.text('$strUploadLabel')
-			.prop('disabled', !!data.files.error);
-	}
-}).on('fileuploadprogressall', function (e, data) {
-	var progress = parseInt(data.loaded / data.total * 100, 10);
-	jQuery('#{$this->ControlId}_progress .bar').css(
-		'width',
-		progress + '%'
-	);
-}).on('fileuploaddone', function (e, data) {
-	jQuery.each(data.result.files, function (index, file) {
-		var link = jQuery('<a>')
-			.attr('target', '_blank')
-			.prop('href', file.url);
-		jQuery(data.context.children()[index])
-			.wrap(link);
-	});
-}).on('fileuploadfail', function (e, data) {
-	jQuery.each(data.result.files, function (index, file) {
-		var error = jQuery('<span/>').text(file.error);
-		jQuery(data.context.children()[index])
-			.append('<br>')
-			.append(error);
-	});
-})
-FUNC;
-					break;
-				case QJqFileUploadType::BASIC_PLUS_UI:
-					break;
-			}
-			return $strJS;
-		}
-
 
 		/////////////////////////
 		// Public Properties: GET
